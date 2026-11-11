@@ -1,78 +1,88 @@
 # context-meter
 
-See how full your Claude Code context is, without leaving the chat.
+A small Claude Code plugin that keeps an eye on your context window for you.
 
-context-meter is a Claude Code plugin that shows your context window, plan usage limits and session cost as a slim **band above the prompt**, a detailed **side panel**, or both. It updates after every reply and after compaction.
+I kept running into the same thing: a long session goes great, then suddenly Claude compacts the conversation and I had no idea it was coming. So I made a little meter that sits right above the message box and shows how full things are, how much the last reply added, where my plan limits are, and what the session has cost so far.
 
-## What it shows
+<p align="center">
+  <img src="assets/band-demo.svg" alt="The band above the prompt: context grows with each reply, turns amber near the limit, and drops back after compaction" width="880">
+</p>
 
-**Band** — one quiet line above the message box:
+## Two ways to see it
 
-```
-▬▬▬▬───────  15%  152k / 1M  · +4.2k last reply  · 5h 15%  · $3.55     Details  ✕
-```
+**The band** is one quiet line above the prompt. It stays grey and out of the way, and only turns amber at 70% and red at 85%. The little tick on the bar marks where auto-compact kicks in, and `+26k last reply` tells you which message ate the most space.
 
-- A bar that turns amber at 70% and red at 85%, with a tick where auto-compact kicks in
-- How many tokens the last reply added, so you can see what's eating your context
-- Your 5-hour plan limit and the session cost
+**The side panel** is for when you want the whole picture:
 
-**Side panel** — the full picture:
+<img src="assets/panel.svg" alt="The side panel: context ring, growth chart, token breakdown, plan limits and session cost" width="320" align="right">
 
-- A ring gauge with the percentage, token count and **about how many replies are left** before compaction, based on your recent pace
-- A chart of context growth over the session
-- **What's using it**: a colour-coded breakdown (messages, tools, memory files, …)
-- 5-hour and weekly plan limits, with reset countdowns
-- Session cost
+- How full the context is, with a rough guess at **how many replies you have left** before compaction, based on your recent pace
+- A chart of how the context grew over the session
+- What's actually taking up the space: your messages, tools, memory files and so on
+- Your 5-hour and weekly plan limits, with when they reset
+- What the session has cost
 
-On the desktop app, VS Code and mobile it draws real graphics; in the terminal it falls back to text bars.
+You can show the band, the panel, or both, and switch whenever you like. It remembers your choice next time.
+
+On the desktop app, VS Code and mobile it draws proper graphics. In the terminal it falls back to simple text bars.
+
+<br clear="right">
 
 ## Install
 
-At the prompt of a Claude Code terminal session:
+In a Claude Code terminal session, run:
 
 ```
 /plugin install context-meter --marketplace nocashflow/context-meter
 ```
 
-Answer `y` to add the marketplace, then pick a scope (the user scope makes it load in every session).
+Say `y` when it asks to add the marketplace, then pick a scope. The user scope means it loads in every session.
 
-From a shell:
+Prefer the shell?
 
 ```bash
 claude plugin install context-meter --marketplace nocashflow/context-meter
 ```
 
-In the Claude desktop app: click **+** next to the prompt box, then **Plugins** → **Add marketplace** with `nocashflow/context-meter`, then **Add plugin**.
+In the Claude desktop app, click **+** next to the prompt box, go to **Plugins**, choose **Add marketplace**, enter `nocashflow/context-meter`, then **Add plugin**.
 
-## Use
+## Using it
 
-| Command | What it does |
+| Command | What happens |
 | --- | --- |
-| `/context-view` | Flip between band and side panel |
-| `/context-view band` | Band only |
-| `/context-view pane` | Side panel only |
-| `/context-view both` | Band and side panel |
-| `/context-view off` | Hide everything |
+| `/context-view` | Flips between the band and the panel |
+| `/context-view band` | Just the band |
+| `/context-view pane` | Just the side panel |
+| `/context-view both` | Both at once |
+| `/context-view off` | Hides everything |
 
-You can also switch with the buttons in either view. Your choice is remembered across sessions, and closing the panel by hand falls back to the band.
+The buttons in the band and the panel do the same thing. If you close the panel yourself, it falls back to the band.
 
-## Privacy
+## What it can and can't see
 
-context-meter only reads your session's own usage numbers — the same ones `/context` and `/cost` show. The breakdown is estimated locally, so it sends no extra requests. It has no file, shell or network access, never reads your messages, and stores just one thing: which view you picked.
+context-meter only reads your session's own usage numbers, the same ones `/context` and `/cost` show you. The breakdown is worked out locally, so it doesn't send any extra requests. It has no access to your files, your terminal or the network, it never reads your messages, and the only thing it saves is which view you picked.
 
-## Develop
+## A small confession
+
+I mostly built this to learn git and GitHub properly. This is my first public repo, my first real commit history and my first README, and my first time writing TypeScript with JSX too. So if you spot something odd, or there's a better way to do any of it, please [open an issue](https://github.com/nocashflow/context-meter/issues). I'd genuinely like to learn from it.
+
+## Working on it
+
+If you want to poke at the code:
 
 ```bash
 claude plugin validate .
 claude plugin test .
 ```
 
-Load it from this folder while you work on it:
+And to run your local copy while you change things:
 
 ```bash
 claude --plugin-dir .
 ```
 
+*The images above are illustrations made for this README. The real thing follows your app's theme.*
+
 ## License
 
-[MIT](LICENSE) © nocashflow
+[MIT](LICENSE). Use it, change it, share it.

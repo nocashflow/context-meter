@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="300" viewBox="0 0 880 300" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title>context-meter band: context grows with each reply, turns amber near the limit, and drops after compaction</title>
+  <defs>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FAF9F6" stop-opacity="1"/>
+      <stop offset="1" stop-color="#FAF9F6" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="chatArea"><rect x="0" y="0" width="880" height="188"/></clipPath>
+  </defs>
+  <rect width="880" height="300" rx="18" fill="#FAF9F6"/>
+  <rect x="0.5" y="0.5" width="879" height="299" rx="17.5" fill="none" stroke="#E6E3DC"/>
+
+  <g clip-path="url(#chatArea)">
+  <g>
+    <animateTransform attributeName="transform" type="translate" dur="14s" repeatCount="indefinite"
+      keyTimes="0;0.4714;0.5036;0.7357;0.7364;1" values="0 0;0 0;0 -96;0 -96;0 0;0 0"
+      calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1;0 0 1 1;0 0 1 1;0 0 1 1"/>
+    <g opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.1536;0.1714;0.7;0.7357;1" values="0;0;1;1;0;0"/>
+    <rect x="529" y="70" width="231" height="30" rx="15" fill="#ECEAE4"/>
+    <text x="543" y="90" font-size="13.5" fill="#26251F">Split the parser into modules</text>
+  </g>
+    <rect x="120" y="116" width="520" height="8" rx="4" fill="#E3E0D9" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.1857;0.2036;0.7;0.7357;1" values="0;0;1;1;0;0"/></rect><rect x="120" y="132" width="470" height="8" rx="4" fill="#E3E0D9" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.1986;0.2164;0.7;0.7357;1" values="0;0;1;1;0;0"/></rect><rect x="120" y="148" width="300" height="8" rx="4" fill="#E3E0D9" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.2114;0.2293;0.7;0.7357;1" values="0;0;1;1;0;0"/></rect>
+    <g opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.4714;0.4893;0.7;0.7357;1" values="0;0;1;1;0;0"/>
+    <rect x="550" y="166" width="210" height="30" rx="15" fill="#ECEAE4"/>
+    <text x="564" y="186" font-size="13.5" fill="#26251F">Now add tests for each one</text>
+  </g>
+    <rect x="120" y="212" width="560" height="8" rx="4" fill="#E3E0D9" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.5071;0.525;0.7;0.7357;1" values="0;0;1;1;0;0"/></rect><rect x="120" y="228" width="500" height="8" rx="4" fill="#E3E0D9" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.52;0.5379;0.7;0.7357;1" values="0;0;1;1;0;0"/></rect><rect x="120" y="244" width="540" height="8" rx="4" fill="#E3E0D9" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.5329;0.5507;0.7;0.7357;1" values="0;0;1;1;0;0"/></rect><rect x="120" y="260" width="380" height="8" rx="4" fill="#E3E0D9" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.5457;0.5636;0.7;0.7357;1" values="0;0;1;1;0;0"/></rect><rect x="120" y="276" width="450" height="8" rx="4" fill="#E3E0D9" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.5586;0.5764;0.7;0.7357;1" values="0;0;1;1;0;0"/></rect>
+  </g>
+  <g opacity="1"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.1429;0.1643;0.7786;0.8071;1" values="1;1;0;0;1;1"/>
+    <rect x="322" y="128" width="236" height="26" rx="13" fill="none" stroke="#DCD9D2"/>
+    <text x="440" y="145" font-size="12" fill="#7A776F" text-anchor="middle">Earlier conversation compacted</text>
+  </g></g>
+  <rect x="0" y="0" width="880" height="70" fill="url(#fade)"/>
+
+  <!-- band -->
+  <rect x="120" y="194" width="640" height="34" rx="11" fill="#F0EEE9"/>
+  <rect x="136" y="209" width="64" height="6" rx="3" fill="rgba(128,128,128,0.22)"/>
+  <rect x="136" y="209" width="11.5" height="6" rx="3" fill="#3FA672"><animate attributeName="width" dur="14s" repeatCount="indefinite" keyTimes="0;0.2714;0.3036;0.5929;0.625;0.7786;0.8143;1" values="11.5;11.5;19.8;19.8;47.4;47.4;11.5;11.5"/><animate attributeName="fill" dur="14s" repeatCount="indefinite" keyTimes="0;0.5929;0.6143;0.7786;0.8071;1" values="#3FA672;#3FA672;#D99A2B;#D99A2B;#3FA672;#3FA672"/></rect>
+  <rect x="186.2" y="209" width="2" height="6" fill="rgba(128,128,128,0.6)"/>
+  <g opacity="1"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.2714;0.2857;0.9714;0.9893;1" values="1;1;0;0;1;1"/>
+    <text x="210" y="216" font-size="13" font-weight="600" fill="#26251F">18%</text>
+    <text x="244" y="216" font-size="13" fill="#7A776F">36k / 200k</text>
+    
+    <text x="322" y="216" font-size="13" fill="#7A776F">· 5h 12%</text>
+    <text x="390" y="216" font-size="13" fill="#7A776F">· $1.12</text>
+  </g><g opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.2786;0.2929;0.5929;0.6071;1" values="0;0;1;1;0;0"/>
+    <text x="210" y="216" font-size="13" font-weight="600" fill="#26251F">31%</text>
+    <text x="244" y="216" font-size="13" fill="#7A776F">62k / 200k</text>
+    <text x="454" y="216" font-size="13" fill="#7A776F">· +26k last reply</text>
+    <text x="322" y="216" font-size="13" fill="#7A776F">· 5h 14%</text>
+    <text x="390" y="216" font-size="13" fill="#7A776F">· $1.48</text>
+  </g><g opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.6;0.6143;0.7786;0.7929;1" values="0;0;1;1;0;0"/>
+    <text x="210" y="216" font-size="13" font-weight="600" fill="#D99A2B">74%</text>
+    <text x="244" y="216" font-size="13" fill="#7A776F">148k / 200k</text>
+    <text x="454" y="216" font-size="13" fill="#7A776F">· +86k last reply</text>
+    <text x="322" y="216" font-size="13" fill="#7A776F">· 5h 19%</text>
+    <text x="390" y="216" font-size="13" fill="#7A776F">· $2.36</text>
+  </g>
+  <g opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.7786;0.7964;0.9714;0.9893;1" values="0;0;1;1;0;0"/>
+    <text x="210" y="216" font-size="13" font-weight="600" fill="#26251F">18%</text>
+    <text x="244" y="216" font-size="13" fill="#7A776F">36k / 200k</text>
+    <text x="454" y="216" font-size="13" fill="#3FA672">· compacted</text>
+    <text x="322" y="216" font-size="13" fill="#7A776F">· 5h 19%</text>
+    <text x="390" y="216" font-size="13" fill="#7A776F">· $2.41</text>
+  </g>
+  <text x="696" y="216" font-size="13" fill="#7A776F">Details</text>
+  <text x="742" y="216" font-size="12" fill="#7A776F">✕</text>
+
+  <!-- prompt -->
+  <rect x="120" y="238" width="640" height="42" rx="13" fill="#FFFFFF" stroke="#DEDBD4"/>
+  <text x="140" y="261" font-size="14" fill="#A9A59C" opacity="1"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.0429;0.0436;0.15;0.1536;0.3571;0.3579;0.4643;0.4679;1" values="1;1;0;0;1;1;0;0;1;1"/>Reply…</text>
+  <clipPath id="clip0_6"><rect x="140" y="244" height="26" width="0"><animate attributeName="width" dur="14s" repeatCount="indefinite" keyTimes="0;0.0429;0.1429;0.15;0.1507;1" values="0;0;208.8;208.8;0;0"/></rect></clipPath>
+  <text x="140" y="261" font-size="14" fill="#26251F" clip-path="url(#clip0_6)" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.0429;0.0436;0.15;0.1536;1" values="0;0;1;1;0;0"/>Split the parser into modules</text>
+  <clipPath id="clip5"><rect x="140" y="244" height="26" width="0"><animate attributeName="width" dur="14s" repeatCount="indefinite" keyTimes="0;0.3571;0.45;0.4643;0.465;1" values="0;0;187.20000000000002;187.20000000000002;0;0"/></rect></clipPath>
+  <text x="140" y="261" font-size="14" fill="#26251F" clip-path="url(#clip5)" opacity="0"><animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.3571;0.3579;0.4643;0.4679;1" values="0;0;1;1;0;0"/>Now add tests for each one</text>
+  <circle cx="738" cy="259" r="12" fill="#26251F"/>
+  <path d="M738 265 V253 M733 258 L738 253 L743 258" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
