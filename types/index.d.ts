@@ -1,3 +1,6 @@
+// The shapes of the data the mod keeps around. TypeScript uses these to
+// yell before a typo ships, which has already saved this project twice.
+
 export type Mode = 'band' | 'pane' | 'both' | 'off'
 
 export type Category = { name: string; tokens: number }
@@ -7,15 +10,16 @@ export type Limit = { kind: string; percentUsed: number; resetsAt?: string }
 export type Snapshot = {
   tokens?: number
   window: number
-  /** Where auto-compact kicks in, when the engine reports it. */
+  /** Where auto-compact kicks in, if Claude Code tells us. */
   compactAt?: number
   percent?: number
   costUsd?: number
   limits: Limit[]
   categories: Category[]
-  /** Tokens the most recent reply added (negative after a compaction). */
+  /** How much the last reply added. Goes negative after a compaction. */
   lastDelta?: number
-  /** Context size after each reply this session, oldest first. */
+  /** Context size after every reply this session, oldest first.
+   *  This is what the little growth chart is drawn from. */
   history: number[]
 }
 

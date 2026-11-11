@@ -64,7 +64,7 @@ context-meter only reads your session's own usage numbers, the same ones `/conte
 
 ## A small confession
 
-I mostly built this to learn git and GitHub properly. This is my first public repo, my first real commit history and my first README, and my first time writing TypeScript with JSX too. So if you spot something odd, or there's a better way to do any of it, please [open an issue](https://github.com/nocashflow/context-meter/issues). I'd genuinely like to learn from it.
+I mostly made this to learn git and GitHub properly. This is my first public repo, my first real commit history and my first README. I'm also learning TypeScript and JSX along the way, and to be clear, I didn't hand-write the code: I built it with Claude, which I mean, obviously lol. I've been reading through it to understand how it all fits together. So if you spot something odd, or there's a better way to do any of it, please [open an issue](https://github.com/nocashflow/context-meter/issues). I'd genuinely like to learn from it.
 
 ## Working on it
 

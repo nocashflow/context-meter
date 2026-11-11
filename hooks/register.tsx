@@ -1,3 +1,7 @@
+// context-meter: a tiny fuel gauge for your Claude context window.
+// Built with Claude while I learn git, GitHub, TypeScript and JSX,
+// so if something in here looks weird, it probably is. PRs welcome :)
+
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, RenderChildren } from 'claude-code'
 
@@ -8,8 +12,9 @@ const MODES: Mode[] = ['band', 'pane', 'both', 'off']
 const HISTORY_MAX = 60
 
 const mode = atom({ plugin: 'context-meter', key: 'mode' } as const, 'band' as Mode)
-// Bump the tag whenever Snapshot's fields change: it declines what an older
-// version stored, which outlives a reload.
+// Heads up, future me: if you change what's inside Snapshot, bump this
+// tag (snap-3, snap-4...). Old saved data survives reloads, and the new
+// tag makes the mod politely ignore it instead of tripping over it.
 const snap = atom({ plugin: 'context-meter', key: 'snap' } as const, null, {
   shape: 'snap-2',
 })
@@ -17,9 +22,10 @@ const snap = atom({ plugin: 'context-meter', key: 'snap' } as const, null, {
 const showsBand = (m: Mode) => m === 'band' || m === 'both'
 const showsPane = (m: Mode) => m === 'pane' || m === 'both'
 
-// ── Palette ──────────────────────────────────────────────────────────────
-// The mod can't tell whether the app is light or dark, so every colour is a
-// mid-tone that reads on both, and tracks are translucent grey.
+// ── Colours ──────────────────────────────────────────────────────────────
+// The mod has no idea if your app is in light or dark mode (I checked, it
+// really doesn't), so every colour here is a middle tone that looks fine
+// on both. The empty part of each bar is see-through grey for the same reason.
 const OK = '#3FA672'
 const WARN = '#D99A2B'
 const CRIT = '#E0564F'
@@ -29,7 +35,8 @@ const CATEGORY_COLORS = ['#6F86F0', '#3FA6A0', '#D99A2B', '#C46BB0', '#8A97A8', 
 
 const tone = (p: number) => (p >= 85 ? CRIT : p >= 70 ? WARN : OK)
 
-// ── Formatting ───────────────────────────────────────────────────────────
+// ── Making numbers look nice ─────────────────────────────────────────────
+// 152340 tokens -> "152k". Nobody needs to read six digits mid-thought.
 const k = (n: number) => {
   const a = Math.abs(n)
   if (a >= 1_000_000) return `${+(n / 1_000_000).toFixed(a >= 10_000_000 ? 0 : 1)}M`
@@ -53,7 +60,8 @@ const resetIn = (iso: string | undefined, now: number) => {
   return h > 0 ? `resets in ${h}h ${m}m` : `resets in ${m}m`
 }
 
-/** Average growth per reply over the recent ones, ignoring compactions. */
+/** How much a reply usually adds, averaged over the last few. Compactions
+ *  (the big drops) are skipped so they don't mess up the average. */
 const paceOf = (history: number[]) => {
   const steps: number[] = []
   for (let i = Math.max(1, history.length - 10); i < history.length; i++) {
@@ -70,13 +78,15 @@ const repliesLeft = (s: Snapshot) => {
   return Math.max(0, Math.floor((limit - s.tokens) / pace))
 }
 
-// ── SVG pieces (drawn as images, so plain markup with no script) ─────────
+// ── Drawing bits ─────────────────────────────────────────────────────────
+// These build little SVG pictures as plain strings. The app shows them as
+// images, so no scripts, just shapes. Turns out a progress bar is two rectangles.
 const svg = (w: number, h: number, body: string) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${body}</svg>`
 
 const clamp = (p: number) => Math.max(0, Math.min(100, p))
 
-/** The terminal has no SVG: a thin text bar stands in. */
+/** The terminal can't draw SVG, so it gets a text bar instead. Retro. */
 const textBar = (p: number, width: number) => {
   const filled = Math.round((clamp(p) / 100) * width)
   return '━'.repeat(filled) + '─'.repeat(width - filled)
@@ -155,19 +165,21 @@ function sparkSvg(points: number[], max: number, w: number, h: number) {
   )
 }
 
-// ── Reading usage ────────────────────────────────────────────────────────
-// Never throws: a failed reading keeps the last numbers instead of
-// disturbing the turn, compaction or click that asked for it.
+// ── Getting the numbers ──────────────────────────────────────────────────
+// This one never crashes on purpose. If reading the usage fails, we just
+// keep showing the last numbers. A slightly stale meter beats breaking
+// your conversation over it.
 async function refresh($: EngineInterface) {
   try {
     await readUsage($)
   } catch {
-    // keep the previous snapshot
+    // shrug, keep the old numbers
   }
 }
 
 async function readUsage($: EngineInterface) {
-  // `summary` is estimated locally: no extra requests are sent.
+  // 'summary' means the breakdown is worked out on your machine, so this
+  // doesn't send any extra requests anywhere.
   const usage = await $.session.usage({ breakdown: 'summary' })
   const ctx = usage.context
   const prev = await read($, snap)
@@ -182,7 +194,8 @@ async function readUsage($: EngineInterface) {
       history = [tokens]
     } else if (tokens !== before) {
       lastDelta = tokens - before
-      // A big drop is a compaction or /clear: the old curve no longer applies.
+      // A big drop means the chat got compacted (or you ran /clear).
+      // The old growth line doesn't mean anything anymore, so start fresh.
       history = tokens < before * 0.6 ? [tokens] : [...history, tokens].slice(-HISTORY_MAX)
     }
   }
@@ -220,7 +233,7 @@ async function setMode($: EngineInterface, m: Mode) {
   try {
     await $.store.set('mode', m)
   } catch {
-    // the choice still applies to this session
+    // couldn't save it for next time, but it still works for now
   }
   try {
     if (showsPane(m)) {
@@ -229,7 +242,7 @@ async function setMode($: EngineInterface, m: Mode) {
       await $.ui.close({ id: PANE })
     }
   } catch {
-    // a surface without panes: the band still works
+    // this app can't do side panels, so the band will have to do
   }
   await refresh($)
 }
@@ -247,7 +260,7 @@ export const register: Register = on => {
       })
       if (showsPane(m)) void $.ui.open({ id: PANE, title: 'Context' }).catch(() => {})
     } catch {
-      // start with the defaults
+      // something went sideways, just start with the defaults
     }
     await refresh($)
     return ran
@@ -265,7 +278,8 @@ export const register: Register = on => {
     return ran
   })
 
-  // The person closed the pane by hand: drop the pane from the mode.
+  // You closed the panel yourself with the X, so I take the hint and
+  // stop reopening it. (Both -> band, panel -> off.)
   on('ui.close', async ($, e, next) => {
     const ran = await next(e)
     if (e.id === PANE && e.origin.kind === 'person') {
@@ -277,7 +291,7 @@ export const register: Register = on => {
           await $.store.set('mode', after)
         }
       } catch {
-        // the pane is closed either way
+        // it's closed either way, nothing to worry about
       }
     }
     return ran
@@ -287,7 +301,7 @@ export const register: Register = on => {
     const asked = e.args.trim().toLowerCase()
     const current = await read($, mode)
     if (!asked) {
-      // No argument: flip between band and pane.
+      // Just /context-view on its own flips between band and panel.
       const flipped: Mode = current === 'band' ? 'pane' : 'band'
       await setMode($, flipped)
       return { text: `Context view: ${flipped}` }
@@ -300,7 +314,9 @@ export const register: Register = on => {
     return { text: `Context view: ${wanted}` }
   })
 
-  // ── Band: one quiet line above the prompt ──────────────────────────────
+  // ── The band ─────────────────────────────────────────────────────────────
+  // One quiet line above the message box. It stays grey and minds its own
+  // business until you hit 70%, then it starts getting a bit loud.
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const m = await read($, mode)
     const s = await read($, snap)
@@ -354,7 +370,8 @@ export const register: Register = on => {
     )
   })
 
-  // ── Side panel ─────────────────────────────────────────────────────────
+  // ── The side panel ───────────────────────────────────────────────────────
+  // The full picture, for when you actually want to know where it all went.
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const els = $.ui.resolve(e)
     const { Box, Text, Button } = els
@@ -364,8 +381,10 @@ export const register: Register = on => {
     const now = await $.clock.now()
     const W = 260
 
-    // An SVG where the surface draws one; a text bar in the terminal.
-    // (`h` is the JSX factory, so the height is `tall` here.)
+    // Draws the SVG if the app can, a text bar if it can't.
+    // Fun fact: the height was first called `h`, which broke everything,
+    // because `h` is secretly the function JSX uses to build elements.
+    // So now it's `tall`. Lesson learned.
     const pic = (source: string, alt: string, wide: number, tall: number, fallback: string) =>
       Svg ? <Svg source={source} alt={alt} width={wide} height={tall} /> : <Text dimColor>{fallback}</Text>
 
@@ -408,7 +427,7 @@ export const register: Register = on => {
 
     return (
       <Box flexDirection="column" gap="lg" padding="sm">
-        {/* Hero: ring + the numbers that matter */}
+        {/* The big ring and the numbers you actually care about */}
         <Box flexDirection="row" alignItems="center" gap="md">
           {Svg && <Svg source={ringSvg(p, 76, marker)} alt={`Context ${pct(p)} full`} width={76} height={76} />}
           <Box flexDirection="column" gap="xs">

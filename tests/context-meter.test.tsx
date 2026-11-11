@@ -1,3 +1,6 @@
+// Tests! These pretend to be Claude Code, feed the mod fake usage numbers,
+// and check it draws the right things. Run them with: claude plugin test .
+
 import { expect, test } from 'claude-code/testing'
 
 function usage(tokens: number) {
@@ -90,7 +93,7 @@ test('panel shows ring numbers, replies left, breakdown and limits', async ($, o
 
   const pane = await $.ui.mount({ ...PANE, surface: 'desktop' })
   expect((await pane.find({ type: 'Text', text: /^45%$/ }))?.text).toBe('45%')
-  // (160k compact point - 90k) / 10k per reply = 7
+  // Quick maths: (160k compact point - 90k used) / 10k per reply = 7 left
   expect((await pane.find({ type: 'Text', text: /replies left/ }))?.text).toBe('≈ 7 replies left before compaction')
   expect(await pane.find({ type: 'Text', text: /Messages/ })).toBeDefined()
   expect(await pane.find({ type: 'Text', text: /Free space/ })).toBeUndefined()
