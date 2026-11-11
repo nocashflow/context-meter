@@ -1,0 +1,11 @@
+{
+  "name": "context-meter",
+  "version": "0.1.0",
+  "description": "Live context, usage-limit and cost readout as a band above the prompt, a side pane, or both",
+  "author": { "name": "nocashflow", "url": "https://github.com/nocashflow" },
+  "homepage": "https://github.com/nocashflow/context-meter",
+  "repository": "https://github.com/nocashflow/context-meter",
+  "license": "MIT",
+  "keywords": ["context", "tokens", "usage", "cost", "status"],
+  "types": "./types/index.d.ts"
+}

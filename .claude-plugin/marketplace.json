@@ -1,0 +1,6 @@
+{
+  "name": "context-meter",
+  "description": "See your Claude Code context, plan limits and cost as a band above the prompt or a side panel",
+  "owner": { "name": "nocashflow" },
+  "plugins": [{ "name": "context-meter", "source": "./" }]
+}
