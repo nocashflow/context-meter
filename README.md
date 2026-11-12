@@ -62,6 +62,19 @@ The buttons in the band and the panel do the same thing. If you close the panel 
 
 context-meter only reads your session's own usage numbers, the same ones `/context` and `/cost` show you. The breakdown is worked out locally, so it doesn't send any extra requests. It has no access to your files, your terminal or the network, it never reads your messages, and the only thing it saves is which view you picked.
 
+### What it hooks into
+
+All of these just let Claude Code do its thing first, then re-read the numbers. Nothing gets changed, blocked or slowed down.
+
+| Event | What context-meter does |
+| --- | --- |
+| `session.start` | Brings back the view you picked last time and adds `/context-view` |
+| `turn.complete` | Re-reads the numbers after each reply |
+| `session.compact` | Re-reads them right after a compaction (auto or `/compact`) so the meter drops straight away. It never starts, changes or stops one |
+| `ui.close` | Notices when you close the panel yourself, so it stops reopening (both → band, panel → off) |
+| `command.run` | Answers `/context-view` |
+| `ui.render` | Draws the band and the side panel |
+
 ## A small confession
 
 I mostly made this to learn git and GitHub properly. I'm also learning TypeScript and JSX along the way, and to be clear, I didn't hand-write the code: I built it with Claude, which I mean, obviously lol. I've been reading through it to understand how it all fits together. So if you spot something odd, or there's a better way to do any of it, please [open an issue](https://github.com/nocashflow/context-meter/issues). I'd genuinely like to learn from it.

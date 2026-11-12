@@ -7,5 +7,6 @@
   "repository": "https://github.com/nocashflow/context-meter",
   "license": "MIT",
   "keywords": ["context", "tokens", "usage", "cost", "status"],
-  "types": "./types/index.d.ts"
+  "types": "./types/index.d.ts",
+  "icon": "./.claude-plugin/icon.png"
 }

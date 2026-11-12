@@ -32,7 +32,15 @@ const TURN = { answer: '', durationMs: 1, isAborted: false, turnId: 't', reason:
 const BAND = {
   plugin: 'context-meter',
   component: 'AbovePrompt',
-  props: { hasSurvey: false, isCollapsed: false, isWorking: false },
+  props: {
+    hasSurvey: false,
+    isCollapsed: false,
+    isWorking: false,
+    maxRows: 4,
+    bodyColumns: 120,
+    scroll: { offset: 0, bodyRows: 1 },
+    view: {},
+  },
 } as const
 
 const PANE = {

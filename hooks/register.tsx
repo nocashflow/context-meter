@@ -54,10 +54,12 @@ const resetIn = (iso: string | undefined, now: number) => {
   if (!iso) return ''
   const ms = Date.parse(iso) - now
   if (!Number.isFinite(ms) || ms <= 0) return ''
-  const h = Math.floor(ms / 3_600_000)
+  // `hrs`, not `h`. In a .tsx file `h` belongs to JSX, and the Claude
+  // directory said no the one time I forgot (see the fun fact further down).
+  const hrs = Math.floor(ms / 3_600_000)
   const m = Math.round((ms % 3_600_000) / 60_000)
-  if (h >= 48) return `resets in ${Math.round(h / 24)}d`
-  return h > 0 ? `resets in ${h}h ${m}m` : `resets in ${m}m`
+  if (hrs >= 48) return `resets in ${Math.round(hrs / 24)}d`
+  return hrs > 0 ? `resets in ${hrs}h ${m}m` : `resets in ${m}m`
 }
 
 /** How much a reply usually adds, averaged over the last few. Compactions
@@ -81,8 +83,9 @@ const repliesLeft = (s: Snapshot) => {
 // ── Drawing bits ─────────────────────────────────────────────────────────
 // These build little SVG pictures as plain strings. The app shows them as
 // images, so no scripts, just shapes. Turns out a progress bar is two rectangles.
-const svg = (w: number, h: number, body: string) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${body}</svg>`
+// Heights are `ht` for the same reason. `h` is JSX's, not mine.
+const svg = (w: number, ht: number, body: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${ht}" viewBox="0 0 ${w} ${ht}">${body}</svg>`
 
 const clamp = (p: number) => Math.max(0, Math.min(100, p))
 
@@ -92,19 +95,19 @@ const textBar = (p: number, width: number) => {
   return '━'.repeat(filled) + '─'.repeat(width - filled)
 }
 
-function barSvg(p: number, w: number, h: number, marker?: number) {
-  const r = h / 2
+function barSvg(p: number, w: number, ht: number, marker?: number) {
+  const r = ht / 2
   const fill = clamp(p) / 100 * w
-  const minFill = p > 0 ? Math.max(fill, h) : 0
+  const minFill = p > 0 ? Math.max(fill, ht) : 0
   const tick =
     marker !== undefined && marker > 0 && marker < 100
-      ? `<rect x="${(marker / 100) * w - 1}" y="0" width="2" height="${h}" fill="rgba(128,128,128,0.65)"/>`
+      ? `<rect x="${(marker / 100) * w - 1}" y="0" width="2" height="${ht}" fill="rgba(128,128,128,0.65)"/>`
       : ''
   return svg(
     w,
-    h,
-    `<rect width="${w}" height="${h}" rx="${r}" fill="${TRACK}"/>` +
-      (minFill > 0 ? `<rect width="${minFill}" height="${h}" rx="${r}" fill="${tone(p)}"/>` : '') +
+    ht,
+    `<rect width="${w}" height="${ht}" rx="${r}" fill="${TRACK}"/>` +
+      (minFill > 0 ? `<rect width="${minFill}" height="${ht}" rx="${r}" fill="${tone(p)}"/>` : '') +
       tick,
   )
 }
@@ -135,31 +138,31 @@ function ringSvg(p: number, size: number, marker?: number) {
   )
 }
 
-function stackSvg(parts: { tokens: number; color: string }[], total: number, w: number, h: number) {
+function stackSvg(parts: { tokens: number; color: string }[], total: number, w: number, ht: number) {
   let x = 0
   const gap = 2
   const rects = parts
     .map(part => {
       const width = Math.max(2, (part.tokens / total) * w - gap)
-      const out = `<rect x="${x}" y="0" width="${width}" height="${h}" rx="2" fill="${part.color}"/>`
+      const out = `<rect x="${x}" y="0" width="${width}" height="${ht}" rx="2" fill="${part.color}"/>`
       x += width + gap
       return out
     })
     .join('')
-  return svg(w, h, `<rect width="${w}" height="${h}" rx="3" fill="${TRACK}"/>${rects}`)
+  return svg(w, ht, `<rect width="${w}" height="${ht}" rx="3" fill="${TRACK}"/>${rects}`)
 }
 
-function sparkSvg(points: number[], max: number, w: number, h: number) {
+function sparkSvg(points: number[], max: number, w: number, ht: number) {
   if (points.length < 2) return undefined
   const pad = 2
   const step = (w - pad * 2) / (points.length - 1)
-  const y = (v: number) => h - pad - (Math.min(v, max) / max) * (h - pad * 2)
+  const y = (v: number) => ht - pad - (Math.min(v, max) / max) * (ht - pad * 2)
   const coords = points.map((v, i) => `${(pad + i * step).toFixed(1)},${y(v).toFixed(1)}`)
   const last = coords[coords.length - 1]!.split(',')
   return svg(
     w,
-    h,
-    `<polygon points="${pad},${h - pad} ${coords.join(' ')} ${(w - pad).toFixed(1)},${h - pad}" fill="${LINE}" fill-opacity="0.14"/>` +
+    ht,
+    `<polygon points="${pad},${ht - pad} ${coords.join(' ')} ${(w - pad).toFixed(1)},${ht - pad}" fill="${LINE}" fill-opacity="0.14"/>` +
       `<polyline points="${coords.join(' ')}" fill="none" stroke="${LINE}" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round"/>` +
       `<circle cx="${last[0]}" cy="${last[1]}" r="2.5" fill="${LINE}"/>`,
   )
